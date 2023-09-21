@@ -1,0 +1,62 @@
+<!-- <p *ngFor="let messages of message" class="mb-3">
+    {{messages.content}}
+</p> -->
+<div class="mb-4 d-flex">
+    <div class="btn-group " name="container">
+        <button class="btn btn-primary" btnRadio="Unread" [(ngModel)]="container" (click)="loadMessage()">
+            <i class="fa fa-envelope m-1"></i>Unread
+        </button>
+        <button class="btn btn-primary" btnRadio="Inbox" [(ngModel)]="container" (click)="loadMessage()">
+            <i class="fa fa-envelope-open m-1"></i>Inbox
+        </button>
+        <button class="btn btn-primary" btnRadio="Outobx" [(ngModel)]="container" (click)="loadMessage()">
+            <i class="fa fa-paper-plane m-1"></i>Outobx
+        </button>
+    </div>
+</div>
+<div class="row" *ngIf="!message ||message.length>0">
+    <h3>No Message</h3>
+</div>
+<div class="row mb-3" >
+    <table class="table-hover" style="cursor: pointer;">
+        <thead>
+            <tr>
+                <th style="width: 40%;">Message</th>
+                <th style="width: 20%;">From / To</th>
+                <th style="width: 20%;">Send / Received</th>
+                <th style="width: 20%;"></th>
+            </tr>
+        </thead>
+        <tbody class="align-middle">
+            <tr *ngFor="let messages of message" [hidden]="loading" routerLink="{{container ==='Outbox'?
+                '/members/'+messages.recipientUsername 
+                :'/members/'+messages.senderUsername}}" 
+                [queryParams]="{tab:'Messages'}"
+                >
+                <td>{{messages.content}}</td>
+                <td>
+                    <div *ngIf="container=='Outbox'">
+                        <img class="img-circle rounded-circle me-2" alt="recipient Photo"
+                            src="{{messages.recipientPhotoUrl||'../../assets/user.png'}}">
+                        <strong>{{messages.recipientUsername|titlecase}}</strong>
+                    </div>
+                    <div *ngIf="container!='Outbox'">
+                        <img src="{{messages.senderPhotoUrl||'../../assets/user.png'}}"
+                            class="img-circle rounded-circle me-2 " alt="recipient Photo">
+                        <strong>{{messages.senderUsername|titlecase}}</strong>
+                    </div>
+                </td>
+                <td>{{messages.messageSent|timeago}}</td>
+                <td><button class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(messages.id)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="!loading&& paginations &&(message &&message.length>0)">
+    <pagination [boundaryLinks]="true" [totalItems]="paginations.totalItems" [itemsPerPage]="paginations.itemsPerPage"
+        [maxSize]="10" [(ngModel)]="paginations.currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
+        nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+
+    </pagination>
+</div>

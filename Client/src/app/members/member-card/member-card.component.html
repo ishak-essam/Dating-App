@@ -1,0 +1,29 @@
+<div class="card mb-4" *ngIf="Member">
+    <div class="card-img-wrapper">
+        <img src="{{Member.photoUrl}}" alt="{{Member.knownAs}}">
+        <ul class="list-inline member-icons animate text-center">
+            <li class="list-inline-item">
+                <button class="btn btn-primary" routerLink="{{Member.userName}}"><i class="fa fa-user"></i></button>
+            </li>
+            <li class="list-inline-item">
+                <button (click)="AddLike(Member)" class="btn btn-primary"><i class="fa fa-heart"></i></button>
+            </li>
+            <li class="list-inline-item">
+                <button class="btn btn-primary"
+                    routerLink="/members/{{Member.userName}}"
+                    [queryParams]="{tab:'Messages'}"
+                    ><i class="fa fa-envelope"></i></button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body p-1">
+        <h6 class="card-title text-center mb-1">
+            <span [class.in-line]="(presence.onlineUserSource$ |async)?.includes(Member.userName)">
+                <i class="fa fa-user me-2"></i>{{Member.knownAs}}
+                {{Member.knownAs}} , {{Member.age}}
+            </span>
+        </h6>
+        <p class="card-text text-muted text-center">{{Member.city}}</p>
+    </div>
+
+</div>
