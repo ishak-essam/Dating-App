@@ -30,15 +30,16 @@ namespace CourseUdemy.Extensions
                 .WithOrigins ("https://localhost:4200", "https://192.168.1.134:4200");
             }));
             services.AddScoped<ITokenServices, TokenService>();
-            services.AddScoped<IUser, UserRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IPhotoServices,PhotoServices>();
-            services.AddScoped<ILikesRepo,LikesRepos>();
+            //services.AddScoped<IUser, UserRepository>();
+            //services.AddScoped<ILikesRepo,LikesRepos>();
+            //services.AddScoped<IMessageRepo,MessageRepo>();
             services.AddScoped<LogUserActivity>();
-            services.AddScoped<IMessageRepo,MessageRepo>();
             services.AddSignalR ();
             services.AddSingleton <presenceTracer>();
+            services.AddScoped<IUnitOfWork, UnitOfWork> ();
             return services;
         }
     }

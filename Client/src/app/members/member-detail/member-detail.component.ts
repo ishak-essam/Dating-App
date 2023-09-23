@@ -80,9 +80,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   }
   loadMessages() {
     if (this.member) {
-      this.MessagServicesTs.GetMessageThread(this.member.userName).subscribe((ele: any) => {
-        this.messages = ele;
-      });
+      // this.MessagServicesTs.GetMessageThread(this.member.userName).subscribe((ele: any) => {
+      //   this.messages = ele;
+      // });
     }
   }
   selectTabs(heading: string) {

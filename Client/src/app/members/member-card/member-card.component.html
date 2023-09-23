@@ -19,7 +19,7 @@
     <div class="card-body p-1">
         <h6 class="card-title text-center mb-1">
             <span [class.in-line]="(presence.onlineUserSource$ |async)?.includes(Member.userName)">
-                <i class="fa fa-user me-2"></i>{{Member.knownAs}}
+                <i class="fa fa-user me-2"></i>
                 {{Member.knownAs}} , {{Member.age}}
             </span>
         </h6>

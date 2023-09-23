@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseUdemy.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20230921080803_Groups")]
-    partial class Groups
+    [Migration("20230923150832_step1")]
+    partial class step1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,7 +101,7 @@ namespace CourseUdemy.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateRed")
+                    b.Property<DateTime?>("DateRead")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("MessageSent")

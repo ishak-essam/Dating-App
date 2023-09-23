@@ -2,7 +2,7 @@
     <div class="col-4">
         <div class="card">
             <img src="{{this.member.photoUrl || '../../../assets/user.png'}}" alt="{{this.member.knownAs}}"
-                class="card-img-top img-thumbnail">
+                class="card-img-top img-thumbnail imgcard">
             <div class="card-body">
                 <div class="m-2" *ngIf="(presence.onlineUserSource$ |async)?.includes(member.userName)">
                     <i class="class fa fa-user-circle text-success"></i> Online Now

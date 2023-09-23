@@ -59,11 +59,11 @@ namespace CourseUdemy.Data
             return await _context.users.Include(p=>p.Photos).ToListAsync();
         }
 
-        public async Task<bool> SaveAllAsync ( )
-        {
-            return await _context.SaveChangesAsync()>0;
+        //public async Task<bool> SaveAllAsync ( )
+        //{
+        //    return await _context.SaveChangesAsync()>0;
 
-        }
+        //}
 
       
         //public async Task<MemberDTO> GetMemberAysc ( string UseNam ) {
@@ -74,6 +74,17 @@ namespace CourseUdemy.Data
         {
             var us=_context.users.ProjectTo<MemberDTO> (_mapper.ConfigurationProvider).ToListAsync ();
             return await _context.users.ProjectTo<MemberDTO> (_mapper.ConfigurationProvider).ToListAsync ();
+        }
+
+        public void Update ( User user )
+        {
+           _context.Entry(user).State= EntityState.Modified;
+        }
+
+        public async Task<string> GetUserGender ( string UserName )
+        {
+            return await _context.users.Where (x => x.UserName == UserName).Select(x=>x.Gender).FirstOrDefaultAsync();
+
         }
     }
 }

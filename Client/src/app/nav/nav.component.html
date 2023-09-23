@@ -1,26 +1,25 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <div class="container-fluid">
+  <div class="container">
     <a class="navbar-brand" routerLink="/" routerLinkActive="active">Dating App</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
       aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="IsLogin">
-        <li class="nav-item">
-          <a class="nav-link " aria-current="page" routerLink="/members" routerLinkActive="active">Matches</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/lists" routerLinkActive="active">Lists</a>
-        </li>
-        <li class="nav-item" *appHasRole="['Admin','Moderator']">
-          <a class="nav-link " routerLink="/admin" routerLinkActive="active">Admin</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " routerLink="/messages" routerLinkActive="active">Messages</a>
-        </li>
-      </ul>
-      <div class="btn-group" dropdown *ngIf="IsLogin">
+    </button> -->
+    <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="(CurrentUser | async)">
+      <li class="nav-item">
+        <a class="nav-link " aria-current="page" routerLink="/members" routerLinkActive="active">Matches</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/lists" routerLinkActive="active">Lists</a>
+      </li>
+      <li class="nav-item" *appHasRole="['Admin','Moderator']">
+        <a class="nav-link " routerLink="/admin" routerLinkActive="active">Admin</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " routerLink="/messages" routerLinkActive="active">Messages</a>
+      </li>
+    </ul>
+    <!-- <div class="btn-group" dropdown *ngIf="(CurrentUser | async) as user">
         <img src="{{User?.photoUrl||'../../assets/user.png'}}" alt="No Image">
         <button id="button-animated" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
           aria-controls="dropdown-animated">
@@ -31,18 +30,26 @@
           <li role="menuitem"><a class="dropdown-item" href="#" (click)="logout()">Logout</a>
           </li>
         </ul>
+      </div> -->
+
+    <div class="dropdown" *ngIf="(CurrentUser | async) as user" dropdown>
+      <img src="{{User?.photoUrl || '../../assets/user.png'}}" alt="user photo">
+      <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>Welcome{{User.userName |
+        titlecase}}</a>
+      <div class="dropdown-menu mt-3" *dropdownMenu>
+        <a class="dropdown-item" routerLink="edit">Edit Profile</a>
+        <a class="dropdown-item" (click)="logout()">Logout</a>
       </div>
-      <form #loginform="ngForm" class="d-flex" *ngIf="!IsLogin">
-        <input class="form-control me-2" name="username" [(ngModel)]="models.username" type="text"
-          placeholder="UserName">
-        <input class="form-control me-2" type="password" name="password" [(ngModel)]="models.password"
-          placeholder="Password">
-        <button class="btn btn-outline-success" type="submit" (click)="submit()">Login</button>
-        <button class="btn btn-outline-success" type="submit" (click)="ServerError()">ServerError</button>
-        <button class="btn btn-outline-success" type="submit" (click)="NotFound()">NotFound</button>
-
-
-      </form>
     </div>
+    <form #loginform="ngForm" class="d-flex" *ngIf="!IsLogin">
+      <input class="form-control me-2" name="username" [(ngModel)]="models.username" type="text" placeholder="UserName">
+      <input class="form-control me-2" type="password" name="password" [(ngModel)]="models.password"
+        placeholder="Password">
+      <button class="btn btn-success " type="submit" (click)="submit()">Login</button>
+      <!-- <button class="btn btn-outline-success" type="submit" (click)="ServerError()">ServerError</button>
+        <button class="btn btn-outline-success" type="submit" (click)="NotFound()">NotFound</button> -->
+
+
+    </form>
   </div>
 </nav>

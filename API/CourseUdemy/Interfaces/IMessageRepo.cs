@@ -11,7 +11,6 @@ namespace CourseUdemy.Interfaces
         Task<Message> GetMessageAsync ( int id );
         Task<PagedList<MessageDTO>> GetMessageForUserAsync ( MessageParams messageParams );
         Task<IEnumerable<MessageDTO>> GetMessageThread ( string currentUsername, string recipientUsername );
-        Task<bool> SaveChangeAsync ( );
         void addGroup( Group group );
         void removeConnections ( Connection connection );
         Task<Connection> GetConnection ( string ConnectionId );

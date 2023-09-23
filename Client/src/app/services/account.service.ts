@@ -13,7 +13,7 @@ export class AccountService {
   UrlLogin = this.BaseUrl + 'Account/login';
   UrlRegister = this.BaseUrl + 'Account/register';
   private CurrentUserSource = new BehaviorSubject<User | null>(null);
-  CurrentUser$ = this.CurrentUserSource.asObservable();
+   CurrentUser$ = this.CurrentUserSource.asObservable();
   constructor(private http: HttpClient, private presenceService: PresenceService) { }
   Login(Data: any) {
     return this.http.post<User>(this.UrlLogin, Data).pipe(map((respo: User) => {

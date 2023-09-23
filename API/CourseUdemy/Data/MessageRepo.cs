@@ -39,6 +39,11 @@ namespace CourseUdemy.Data
             return await _context.Connections.FindAsync (connectionId);
         }
 
+        public async Task<Group> GetGroupForConnection ( string ConnectionId )
+        {
+            return await _context.Groups.Include (x => x.connections).Where (y => y.connections.Any (c=>c.ConnectionId== ConnectionId)).FirstOrDefaultAsync();
+        }
+
         public async Task<Message> GetMessageAsync ( int id )
         {
             return await _context.Messages.FindAsync (id);
@@ -63,7 +68,7 @@ namespace CourseUdemy.Data
 
         public async Task<IEnumerable<MessageDTO>> GetMessageThread ( string currentUsername, string recipientUsername )
         {
-            var messages=await _context.Messages.Include (u=>u.Sender).ThenInclude(p=>p.Photos)
+            var query= _context.Messages.Include (u=>u.Sender).ThenInclude(p=>p.Photos)
                 .Include (u=>u.Recipient).ThenInclude(p=>p.Photos)
                 .Where(m=>m.RecipientUsername==currentUsername   &&
                 m.RecipientDeleteed==false &&
@@ -71,16 +76,15 @@ namespace CourseUdemy.Data
                m.RecipientUsername== recipientUsername &&
                  m.SenderDeleteed==false &&
                 m.SenderUsername==currentUsername
-                ).OrderByDescending(m=>m.MessageSent).ToListAsync();
-            var unreadMessage=messages.Where(m=>m.DateRead==null&& m.RecipientUsername==currentUsername ).ToList();
+                ).OrderByDescending(m=>m.MessageSent).AsQueryable();
+            var unreadMessage=query.Where(m=>m.DateRead==null&& m.RecipientUsername==currentUsername ).ToList();
             if ( unreadMessage.Any () ) {
                 foreach (var item in unreadMessage )
                 {
                     item.DateRead = DateTime.UtcNow;
                 }
-                await _context.SaveChangesAsync ();
             }
-            return mapper.Map<IEnumerable<MessageDTO>>(messages);
+            return await query.ProjectTo<MessageDTO> (mapper.ConfigurationProvider).ToListAsync();
         }
 
         public void removeConnections ( Connection connection )
@@ -88,9 +92,6 @@ namespace CourseUdemy.Data
             _context.Connections.Remove (connection);
         }
 
-        public async Task<bool> SaveChangeAsync ( )
-        {
-            return await _context.SaveChangesAsync () > 0;
-        }
+     
     }
 }
