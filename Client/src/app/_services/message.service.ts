@@ -6,6 +6,7 @@ import { Message } from '../_modules/message';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { User } from '../Interfaces/User';
 import { BehaviorSubject, take } from 'rxjs';
+import { Group } from '../_modules/group';
 
 @Injectable({
   providedIn: 'root'
@@ -34,11 +35,25 @@ export class MessageService {
       console.log(ele);
       this.messageThread.next(ele);
     })
+    this.hubConnection.on("UpdatedGroup", (group: Group) => {
+      if (group.Connection.some(x => x.connectionId == otherUsername)) {
+        this.messagesThreadSource$.pipe(take(1)).subscribe((ele) => {
+          ele.forEach(mes => {
+            if (!mes.dateRead) {
+              mes.dateRead = new Date(Date.now());
+            }
+          })
+          this.messageThread.next([...ele]);
+        });
+      }
+    })
     this.hubConnection.on("NewMessage", (message) => {
       this.messagesThreadSource$.pipe(take(1)).subscribe(messages => {
         this.messageThread.next([...messages, message])
       });
+
     })
+
   }
   stopHubConnections() {
     if (this.hubConnection)

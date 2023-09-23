@@ -4,9 +4,7 @@ using CourseUdemy.DTOs;
 using CourseUdemy.Entity;
 using CourseUdemy.Helpers;
 using CourseUdemy.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CourseUdemy.Data
 {

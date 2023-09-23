@@ -12,15 +12,17 @@ namespace CourseUdemy.SignalR
     [Authorize]
     public class MessageHub:Hub
     {
-        public IMessageRepo _MessageRepo { get; }
-        public IUser _user { get; }
-        public IMapper _mapper { get; }
+        private readonly IMessageRepo _MessageRepo;
+        private readonly IUser _user;
+        private readonly IMapper _mapper;
+        private readonly IHubContext<PresenceHub> _presensehub;
 
-        public MessageHub(IMessageRepo messageRepo , IUser user ,IMapper mapper)
+        public MessageHub(IMessageRepo messageRepo , IUser user ,IMapper mapper ,IHubContext<PresenceHub> Presensehub)
         {
             _MessageRepo = messageRepo;
             _user = user;
             _mapper = mapper;
+            _presensehub = Presensehub;
         }
         public override async Task OnConnectedAsync ( )
         {
@@ -57,9 +59,17 @@ namespace CourseUdemy.SignalR
             };
             var grouname=GetGroupName(sender.UserName,recipient.UserName);
             var group=await _MessageRepo.GetMessageGroup(grouname);
-            if ( group.connections.Any (x => x.Username == recipient.UserName))  {
+            if ( group.connections.Any (x => x.Username == recipient.UserName) )
+            {
                 message.DateRead = DateTime.UtcNow;
-            } ;
+            }
+            else {
+                var connectitons=await presenceTracer.GetConnectionForUser(recipient.UserName);
+                if ( connectitons != null )
+                    await _presensehub.Clients.Clients (connectitons).SendAsync("NewMessageRecived",
+                        new { username=sender.UserName, KnownAs = sender.KnownAs});
+            }
+            ;
 
             _MessageRepo.AddMessage (message);
             if ( await _MessageRepo.SaveChangeAsync () )

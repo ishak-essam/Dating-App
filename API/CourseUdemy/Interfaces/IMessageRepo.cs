@@ -16,5 +16,6 @@ namespace CourseUdemy.Interfaces
         void removeConnections ( Connection connection );
         Task<Connection> GetConnection ( string ConnectionId );
         Task<Group> GetMessageGroup ( string GroupName );
+        Task<Group> GetGroupForConnection(string ConnectionId );
     }
 }

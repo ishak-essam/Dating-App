@@ -48,6 +48,7 @@ public class Program
             var usermanger=services.GetRequiredService<UserManager<User>>();
             var roleManger=services.GetRequiredService<RoleManager<AppRole>>();
             await context.Database.MigrateAsync ();
+            await context.Database.ExecuteSqlRawAsync (" Delete from [Connections]");
             await Seed.SeedUser (usermanger,roleManger);
         }
         catch ( Exception ex )

@@ -37,6 +37,8 @@ import { AdminManagementComponent } from './admin/admin-management/admin-managem
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { RolesModelComponent } from './models/roles-model/roles-model.component';
+import { routeReuseStrategy } from './_services/routeReuseStrategy';
+import { RouteReuseStrategy } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
@@ -92,6 +94,7 @@ import { RolesModelComponent } from './models/roles-model/roles-model.component'
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: RouteReuseStrategy, useClass: routeReuseStrategy },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
