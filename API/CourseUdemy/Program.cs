@@ -1,5 +1,6 @@
 using CourseUdemy.Data;
 using CourseUdemy.Entity;
+using CourseUdemy.Excetions;
 using CourseUdemy.Extensions;
 using CourseUdemy.Middleware;
 using CourseUdemy.SignalR;
@@ -16,8 +17,32 @@ public class Program
         builder.Services.AddControllers ();
         builder.Services.AddApllicationServices (builder.Configuration);
         builder.Services.AddIdetityServices (builder.Configuration);
+        var connString="";
+        if ( builder.Environment.IsDevelopment () )
+            connString = builder.Configuration.GetConnectionString ("DefaultConnection");
+        else
+        {
+            // Use connection string provided at runtime by Heroku.
+            var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
+            // Parse connection URL to connection string for Npgsql
+            connUrl = connUrl.Replace ("postgres://", string.Empty);
+            var pgUserPass = connUrl.Split("@")[0];
+            var pgHostPortDb = connUrl.Split("@")[1];
+            var pgHostPort = pgHostPortDb.Split("/")[0];
+            var pgDb = pgHostPortDb.Split("/")[1];
+            var pgUser = pgUserPass.Split(":")[0];
+            var pgPass = pgUserPass.Split(":")[1];
+            var pgHost = pgHostPort.Split(":")[0];
+            var pgPort = pgHostPort.Split(":")[1];
+            var updatedHost = pgHost.Replace("flycast", "internal");
 
+            connString = $"Server={updatedHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};";
+        }
+        builder.Services.AddDbContext<UserDbContext> (opt =>
+        {
+            opt.UseNpgsql (connString);
+        });
 
         var app = builder.Build();
         app.UseMiddleware<ExceptionMiddleware> ();
@@ -32,7 +57,10 @@ public class Program
         //        .WithOrigins ("https://localhost:4200/" ));
         app.UseAuthentication ();
         app.UseAuthorization ();
+        app.UseDefaultFiles ();
+        app.UseStaticFiles ();
         app.MapControllers ();
+        app.MapFallbackToController ("Index", "Fallback");
         app.MapHub <PresenceHub>("hubs/presence");
         app.MapHub <MessageHub>("hubs/message");
         if ( app.Environment.IsDevelopment () )
@@ -48,7 +76,8 @@ public class Program
             var usermanger=services.GetRequiredService<UserManager<User>>();
             var roleManger=services.GetRequiredService<RoleManager<AppRole>>();
             await context.Database.MigrateAsync ();
-            await context.Database.ExecuteSqlRawAsync (" Delete from [Connections]");
+            //await context.Database.ExecuteSqlRawAsync (" Delete from \"Connections\"");
+            await Seed.ClearConnection (context);
             await Seed.SeedUser (usermanger,roleManger);
         }
         catch ( Exception ex )

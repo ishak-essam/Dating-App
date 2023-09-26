@@ -1,15 +1,17 @@
 <div class="row" *ngIf="member">
-    <div class="col-2" *ngFor="let image of member.photos">
-        <img [src]="image.url" alt="no image" class="img-thumbnail mb-1">
+    <div class="col-2 mb-1 img-wrapper" *ngFor="let image of member.photos">
+        <img [src]="image.url" alt="no image" class="img-thumbnail p-1" [class.not-approved]="!image.isApproved">
         <div class="text-center">
-            <button class="btn btn-sm"
-            [disabled]="image.isMain"
-            (click)="SetPhoto(image)"
-            [ngClass]="image.isMain?'btn-success active':'btn-outline-success '"
-            >Main {{image.isMain}}</button>
-            <button class="btn btn-sm btn-danger" 
-            [disabled]="image.isMain"
-            (click)="DeletePhoto(image.id)"><i class="fa fa-trash"></i></button>
+            <!-- <button class="btn btn-sm" [disabled]="image.isMain" (click)="SetPhoto(image)"
+                [ngClass]="image.isMain?'btn-success active':'btn-outline-success '">Main {{image.isMain}}</button>
+            <button class="btn btn-sm btn-danger" [disabled]="image.isMain" (click)="DeletePhoto(image.id)"><i
+                    class="fa fa-trash"></i></button> -->
+            <button [disabled]="image.isMain || !image.isApproved" (click)="SetPhoto(image)"
+                [ngClass]='image.isMain ? "btn-success active" : "btn-outlinesuccess"' class="btn btn-sm">Main</button>
+
+        </div>
+        <div class="text-center img-text" *ngIf="!image.isApproved">
+            <span class="text-danger">Awaiting approval</span>
         </div>
     </div>
 </div>
@@ -66,7 +68,7 @@
             <button type="button" class="btn btn-success btn-s" (click)="uploader?.uploadAll()"
                 [disabled]="!uploader?.getNotUploadedItems()?.length">
                 <span class="fa-fa-upload"></span>
-                 Upload all
+                Upload all
             </button>
             <button type="button" class="btn btn-warning btn-s" (click)="uploader?.cancelAll()"
                 [disabled]="!uploader?.isUploading">

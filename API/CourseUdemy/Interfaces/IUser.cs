@@ -13,9 +13,10 @@ namespace CourseUdemy.Interfaces
         Task<User> GetUserByIDAsync ( int id );
         Task<User> GetUserByUserNameAsync ( string UserName );
         Task<PagedList<MemberDTO>> GetMembersAsync ( UserParams userParams );
-        Task<MemberDTO> GetMemberAsync ( string UserName );
+        Task<MemberDTO> GetMemberAsync ( string username, bool isCurrentUser );
         Task<List<MemberDTO>> GetAllMembersAsysc (  );
         Task<string>GetUserGender ( string UserName );
-        
+        Task<User> GetUserByPhotoId ( int photoId);
+
     }
 }

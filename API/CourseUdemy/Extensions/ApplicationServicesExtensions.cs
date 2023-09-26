@@ -19,7 +19,7 @@ namespace CourseUdemy.Extensions
             }).AddRoles<AppRole> ().AddRoleManager<RoleManager<AppRole>> ().AddEntityFrameworkStores<UserDbContext> ();
             services.AddDbContext<UserDbContext>(opt =>
             {
-                opt.UseSqlite(configuration.GetConnectionString("DefulatConnections"));
+                opt.UseNpgsql(configuration.GetConnectionString("DefulatConnections"));
             });
 
             services.AddCors (opt => opt.AddPolicy ("CorsPolicy", Policy =>
@@ -27,7 +27,7 @@ namespace CourseUdemy.Extensions
                 Policy.AllowAnyHeader ()
                 .AllowAnyMethod ().
                 AllowCredentials()
-                .WithOrigins ("https://localhost:4200", "https://192.168.1.134:4200");
+                .WithOrigins ("https://localhost:4200", "https://192.168.1.134:4200", "http://localhost:8080/");
             }));
             services.AddScoped<ITokenServices, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

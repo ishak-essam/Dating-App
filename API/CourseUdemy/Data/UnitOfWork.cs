@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CourseUdemy.Entity;
 using CourseUdemy.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseUdemy.Data
 {
@@ -19,7 +20,7 @@ namespace CourseUdemy.Data
         public IMessageRepo messageRepo => new MessageRepo(_userDbContext,_mapper);
 
         public ILikesRepo likesRepo =>  new LikesRepos (_userDbContext);
-
+        public IPhotoRepository PhotoRepository => new PhotoRepository (_userDbContext);
         public async Task<bool> Compelete ( )
         {
             return await _userDbContext.SaveChangesAsync ()>0;

@@ -51,13 +51,6 @@ export class NavComponent implements OnInit {
     this.router.navigateByUrl('/')
   }
 
-  ServerError() {
-    this.http.get('https://localhost:7027/api/Bugg/server-error').subscribe(ele => {
-      // this.router.navigateByUrl('NoServerFound')
-      console.log('##########')
-    })
-    // https://localhost:7027/api/Bugg/server-error
-  }
   NotFound() {
     this.router.navigateByUrl('NoServerFound')
 

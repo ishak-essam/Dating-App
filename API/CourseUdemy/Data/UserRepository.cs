@@ -4,6 +4,7 @@ using CourseUdemy.DTOs;
 using CourseUdemy.Entity;
 using CourseUdemy.Helpers;
 using CourseUdemy.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseUdemy.Data
@@ -11,7 +12,6 @@ namespace CourseUdemy.Data
     public class UserRepository : IUser
     {
         private readonly IMapper _mapper;
-
         private readonly  UserDbContext _context;
         public UserRepository( UserDbContext user ,IMapper mapper)
         {
@@ -19,9 +19,17 @@ namespace CourseUdemy.Data
             this._mapper = mapper;
         }
 
-        public async Task<MemberDTO> GetMemberAsync ( string UserName )
+        public async Task<MemberDTO> GetMemberAsync ( string username, bool
+isCurrentUser )
         {
-            return await _context.users.Where (x => x.UserName == UserName).ProjectTo<MemberDTO> (_mapper.ConfigurationProvider).SingleOrDefaultAsync();
+
+            var query = _context.Users.
+                Where(x => x.UserName == username)
+                .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            if ( isCurrentUser ) query = query.IgnoreQueryFilters ();
+            return await query.FirstOrDefaultAsync ();
+            //return await _context.users.Where (x => x.UserName == UserName).ProjectTo<MemberDTO> (_mapper.ConfigurationProvider).SingleOrDefaultAsync();
         }
 
         public async Task<PagedList<MemberDTO>> GetMembersAsync ( UserParams userParams )
@@ -59,18 +67,28 @@ namespace CourseUdemy.Data
             return await _context.users.Include(p=>p.Photos).ToListAsync();
         }
 
-        //public async Task<bool> SaveAllAsync ( )
-        //{
-        //    return await _context.SaveChangesAsync()>0;
+        public async Task<User> GetUserByPhotoId ( int photoId )
+        {
+            return await _context.Users
+            .Include (p => p.Photos)
+            .IgnoreQueryFilters ()
+            .Where (p => p.Photos.Any (p => p.Id == photoId))
+            .FirstOrDefaultAsync ();
+        }
 
-        //}
+       
+            //public async Task<bool> SaveAllAsync ( )
+            //{
+            //    return await _context.SaveChangesAsync()>0;
 
-      
-        //public async Task<MemberDTO> GetMemberAysc ( string UseNam ) {
-        //    var userone=_context.users.Where(ele=>ele.UserName==UseNam).ProjectTo<MemberDTO>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
-        //    return await _context.users.Where(ele=>ele.UserName==UseNam).ProjectTo<MemberDTO>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
-        //}
-        public async Task<List<MemberDTO>> GetAllMembersAsysc ( )
+            //}
+
+
+            //public async Task<MemberDTO> GetMemberAysc ( string UseNam ) {
+            //    var userone=_context.users.Where(ele=>ele.UserName==UseNam).ProjectTo<MemberDTO>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
+            //    return await _context.users.Where(ele=>ele.UserName==UseNam).ProjectTo<MemberDTO>(_mapper.ConfigurationProvider).SingleOrDefaultAsync();
+            //}
+            public async Task<List<MemberDTO>> GetAllMembersAsysc ( )
         {
             var us=_context.users.ProjectTo<MemberDTO> (_mapper.ConfigurationProvider).ToListAsync ();
             return await _context.users.ProjectTo<MemberDTO> (_mapper.ConfigurationProvider).ToListAsync ();

@@ -9,7 +9,10 @@ namespace CourseUdemy.Data
 {
     public class Seed
     {
-
+        public static async Task ClearConnection (UserDbContext userDbContext ) {
+            userDbContext.Connections.RemoveRange (userDbContext.Connections);
+            await userDbContext.SaveChangesAsync ();
+        }
         public static  async Task  SeedUser(UserManager<User> userManager,RoleManager<AppRole> roleManager) {
             if (await userManager.Users.AnyAsync() ) return;
             var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
@@ -32,7 +35,10 @@ namespace CourseUdemy.Data
                 user.UserName = user.UserName.ToLower ();
                 //user.PasswordHash = hmac.ComputeHash (Encoding.UTF8.GetBytes ("Pa$$w0rd"));
                 //user.PasswordSalt = hmac.Key;
-               await userManager.CreateAsync(user,"Pa$$w0rd");
+                user.Photos.First ().IsApproved = true;
+                user.Created = DateTime.SpecifyKind (user.Created, DateTimeKind.Utc);
+                user.LastActive = DateTime.SpecifyKind (user.LastActive, DateTimeKind.Utc);
+                await userManager.CreateAsync(user,"Pa$$w0rd");
                 await userManager.AddToRoleAsync (user,"Member"); 
             }
             var Admin=new User

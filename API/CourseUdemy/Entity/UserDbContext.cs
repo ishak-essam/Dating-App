@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CourseUdemy.Excetions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ namespace CourseUdemy.Entity
         public  DbSet<UserLike> likes { get; set; }
         public  DbSet<Message> Messages { get; set; }
         public  DbSet<Group> Groups { get; set; }
+        public DbSet<photo> Photos { get; set; }
         public  DbSet<Connection> Connections { get; set; }
         protected override void OnModelCreating ( ModelBuilder modelBuilder )
         {
@@ -37,6 +39,13 @@ namespace CourseUdemy.Entity
                     m => m.MessageRecevied).OnDelete (DeleteBehavior.Restrict);
             modelBuilder.Entity<Message> ().HasOne (k => k.Sender).WithMany (
                    m => m.MessageSent).OnDelete (DeleteBehavior.Restrict);
+
+            //
+            modelBuilder.Entity<Message> ()
+                .HasOne (u => u.Sender)
+                .WithMany (m => m.MessageSent)
+                .OnDelete (DeleteBehavior.Restrict);
+            modelBuilder.Entity<photo> ().HasQueryFilter (p => p.IsApproved);
         }
 
     }
