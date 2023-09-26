@@ -23,6 +23,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-        context: "{{defultContext}:CoursreUdemy }"
+        context: "{{defultContext}}:CoursreUdemy"
           push: true
           tags: isaacessam/datingapp:latest
