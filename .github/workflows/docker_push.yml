@@ -1,4 +1,4 @@
-name: ci
+name: douker_push
 on:
 
 workflow_dishmatch:
@@ -23,6 +23,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-        context: "{{defultContext}}:CoursreUdemy"
+        context: "{{defultContext}}:API"
           push: true
           tags: isaacessam/datingapp:latest
